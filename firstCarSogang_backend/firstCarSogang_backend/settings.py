@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'firstCarSogang_home',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,7 +55,7 @@ import os
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'firstCarSogang_hwan','templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'firstCarSogang_signuplogin','templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
