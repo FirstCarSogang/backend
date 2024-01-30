@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class FirstcarsogangHwanConfig(AppConfig):
+class FirstcarsogangsignuploginConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'firstCarSogang_hwan'
+    name = 'firstCarSogang_signuplogin'
