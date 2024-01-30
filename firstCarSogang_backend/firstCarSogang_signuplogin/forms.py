@@ -7,4 +7,4 @@ class UserForm(UserCreationForm):
 
     class Meta:
         model = NormalUser
-        fields = ('username', 'password1', 'password2', 'email')
+        fields = ['studentID', 'name', 'email', 'kakaotalkID', 'password1', 'photo1', 'photo2', 'photo3']

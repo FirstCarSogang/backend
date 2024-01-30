@@ -7,20 +7,14 @@ def logout_view(request):
     return redirect('/')
 
 def signup(request):
-    if request.method =="POST":
-        form = UserForm (request.POST)
+    if request.method == "POST":
+        form = UserForm(request.POST)
         if form.is_valid():
-            form.save()
-            studentID=form.cleaned_data.get('studentID')
-            name=form.cleaned_data.get('name')
-            email=form.cleaned_data.get('email')
-            kakaotalkID =form.cleaned_data.get('kakaotalkID')
-            password=form.cleaned_data.get('password1')
-            photo1 =form.cleaned_data.get('photo1')
-            photo2 =form.cleaned_data.get('photo2')
-            photo3 =form.cleaned_data.get('photo3')
-            user=authenticate(username=studentID,password=password)
-            login(request,user)
+            user = form.save(commit=False)
+            user.studentID = form.cleaned_data.get('studentID')
+            user.save()
+            login(request, user)
+            return redirect('/')
     else:
-        form=UserForm()
-    return render(request,'signup.html', {'form':form})
+        form = UserForm()
+    return render(request, 'signup.html', {'form': form})
