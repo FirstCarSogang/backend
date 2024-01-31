@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 class NormalUser(AbstractUser):
-    studentID = models.IntegerField(unique=True, null=False, blank=False, verbose_name="서강대 학번")
+    username = models.IntegerField(unique=True, null=True, blank=True, verbose_name="서강대 학번")
     name = models.CharField(max_length=100, verbose_name="사용자명", null=False, blank=False)
     email = models.EmailField(max_length=100, verbose_name="서강대 E-mail", unique=True)
     kakaotalkID = models.CharField(max_length=100, verbose_name="카카오톡 ID", blank=True)
@@ -13,4 +13,4 @@ class NormalUser(AbstractUser):
     last_login = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return str(self.studentID)
+        return str(self.username)

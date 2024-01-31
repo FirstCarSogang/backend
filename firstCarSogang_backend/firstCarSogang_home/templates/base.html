@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html>
-<head> 
+<html lang="en">
+<head>
     <meta charset="utf-8">
-    <title>{%block title%} First Car Sogang {% endblock}</title>
-    <body> 
-        <main>
-            {%block content} {% endblock}
-        </main>
-    </body>
+    <title>{% block title %}First Car Sogang{% endblock %}</title>
 </head>
-
+<body>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
 </html>
