@@ -1,35 +1,26 @@
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login, logout
-import os
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth import login, authenticate
-from django.contrib import messages
+from .forms import UserForm
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
 
 def signup(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+    if request.method =="POST":
+        form = UserForm (request.POST)
         if form.is_valid():
-            user = form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}')
-            login(request, user)
-            return redirect('home')  
-        else:
-            form = UserCreationForm()
-    return render(request, 'signup.html', {'form': form})
-
-def user_login(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('home')  
+            form.save()
+            studentID=form.cleaned_data.get('studentID')
+            name=form.cleaned_data.get('name')
+            email=form.cleaned_data.get('email')
+            kakaotalkID =form.cleaned_data.get('kakaotalkID')
+            password=form.cleaned_data.get('password1')
+            photo1 =form.cleaned_data.get('photo1')
+            photo2 =form.cleaned_data.get('photo2')
+            photo3 =form.cleaned_data.get('photo3')
+            user=authenticate(username=studentID,password=password)
+            login(request,user)
     else:
-        form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
-
-def user_logout(request):
-    logout(request)
-    return redirect('home')  
+        form=UserForm()
+    return render(request,'signup.html', {'form':form})

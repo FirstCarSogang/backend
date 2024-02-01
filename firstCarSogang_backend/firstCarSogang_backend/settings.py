@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'firstCarSogang_home',
+    'firstCarSogang_signuplogin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -51,11 +52,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'firstCarSogang_backend.urls'
+LOGIN_REDIRECT_URL='/'
 import os
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'firstCarSogang_signuplogin','templates')],
+        'DIRS':[],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -84,6 +86,7 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
+AUTH_USER_MODEL = 'firstCarSogang_signuplogin.NormalUser'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
