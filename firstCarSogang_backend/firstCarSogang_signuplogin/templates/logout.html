@@ -1,7 +1,6 @@
-from django.contrib.auth.decorators import login_required
-from django.contrib import auth
-
-@login_required
-def logout(request):
-		auth.logout(request) 
-    return something
+{% if user.is_authenticated %}
+    <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+{% endif %}

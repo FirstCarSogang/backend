@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from .forms import UserForm
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .forms import EmailAuthenticationForm 
 
 def logout_view(request):
     logout(request)
@@ -24,7 +23,7 @@ def signup(request):
 
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        form = UserForm(request, data=request.POST)
         if form.is_valid():
             username= form.cleaned_data['username'] 
             password = form.cleaned_data['password']
@@ -34,7 +33,8 @@ def login_view(request):
                 return redirect('/')
             else:
                 messages.error(request, 'Invalid username or password. Please try again.')
-                return redirect('/')
+        else:
+                messages.error(request, 'Username and password are required fields.')    
     else:
         form = AuthenticationForm()
 

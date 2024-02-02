@@ -9,16 +9,17 @@ class EmailAuthenticationForm(AuthenticationForm):
     username = forms.EmailField(widget=forms.TextInput(attrs={'autofocus': True}))
 
 class UserForm(UserCreationForm):
-    email = forms.EmailField(label="이메일")
+    username = forms.IntegerField(label="학번")
     class Meta:
         model = NormalUser
         fields = ['username', 'name', 'email', 'kakaotalkID', 'password1', 'photo1', 'photo2', 'photo3']
     def clean_studentID(self):
         student_id = self.cleaned_data['username']
-        if len(str(student_id)) != 8:
-            raise ValidationError("Student ID must be 8 digits long.")
         if NormalUser.objects.filter(username=student_id).exists():
             raise ValidationError("This student ID is already in use.")
+        if not student_id.isdigit():
+            raise ValidationError('Username must contain only numbers.')
+
         return student_id
     def clean_kakaotalkID(self):
         kakaotalk_id = self.cleaned_data['kakaotalkID']
