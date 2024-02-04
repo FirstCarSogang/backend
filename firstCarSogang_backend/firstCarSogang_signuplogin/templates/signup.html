@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
+    <title></title>
 </head>
 <body>
-    <h2>Sign Up</h2>
-    <form method="post" action="{% url 'signup' %}">
+    <h2>회원 가입 1단계</h2>
+    <form method="post" >
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Sign Up</button>
+        <button type="submit">다음 단계</button>
     </form>
 </body>
 </html>
