@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Page</title>
+</head>
+<body>
+    <h1>Welcome, {{ user_profile.username }}!</h1>
+    {% if user_profile.photo1 %}
+        <img src="{{ user_profile.photo1.url }}" alt="Photo 1">
+    {% endif %}
+    {% if user_profile.photo2 %}
+        <img src="{{ user_profile.photo2.url }}" alt="Photo 2">
+    {% endif %}
+    {% if user_profile.photo3 %}
+        <img src="{{ user_profile.photo3.url }}" alt="Photo 3">
+    {% endif %}
+    <p>Slow or Fast: {% if user_profile.sloworfast == 0 %}Slow{% else %}Fast{% endif %}</p>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Update Profile</button>
+    </form>
+    <a href="{% url 'home' %}" class="btn btn-primary">Go Back to Home</a>
+</body>
+</body>
+</html>
