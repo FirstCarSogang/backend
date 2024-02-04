@@ -38,4 +38,9 @@ class LoginForm(forms.Form):
         if NormalUser.objects.filter(username=username).exists():
             raise ValidationError("This student ID is already in use.")        
         return username
-    
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model= NormalUser
+        fields=['photo1','photo2','photo3','sloworfast']
+        
