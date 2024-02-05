@@ -75,5 +75,4 @@ def mypage(request):
             return redirect('mypage')
     else:
         form = UserProfileForm(instance=user_profile)
-
     return render(request, 'mypage.html', {'user_profile': user_profile, 'form': form})
