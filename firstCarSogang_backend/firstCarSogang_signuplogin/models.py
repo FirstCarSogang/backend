@@ -20,16 +20,19 @@ class NormalUser(AbstractUser):
     def __str__(self):
         return str(self.username)
 
+from django.db import models
+
 class Ticket(models.Model):
     ticketNumber = models.IntegerField(verbose_name="티켓 번호")
     progressingDay = models.IntegerField(verbose_name="진행중인 날짜")
-    withWhom = models.CharField(max_length=100, verbose_name="상대방 이름")
-    isAnswered = models.BooleanField(default=False, verbose_name="답변 여부")
-    choose = models.BooleanField(default=False, verbose_name="선택 여부")
+    isAnswered = models.BooleanField(verbose_name="답변 여부", default=False)
+    choose = models.BooleanField(verbose_name="선택 여부", default=False)
+    withWhom = models.CharField(max_length=100, verbose_name="대상")
+    day1_question = models.OneToOneField('Day1Question', on_delete=models.CASCADE, related_name='ticket')
+    after_day1_question = models.OneToOneField('AfterDay1Question', on_delete=models.CASCADE, related_name='ticket')
 
     def __str__(self):
         return f"Ticket {self.ticketNumber} with {self.withWhom}"
-
 
 class Day1Question(models.Model):
     question = models.CharField(max_length=1000, verbose_name="질문")
@@ -42,18 +45,16 @@ class Day1Question(models.Model):
         return f"Question: {self.question} - User: {self.user}"
 
 from django.db import models
-
 class AfterDay1Question(models.Model):
-    question1 = models.CharField(max_length=1000, verbose_name="질문1")
-    placeholder1 = models.CharField(max_length=1000)
-    answer1 = models.CharField(max_length=1000, verbose_name="대답1", blank=True, null=True)
-    question2 = models.CharField(max_length=1000, verbose_name="질문2")
+    question_id = models.IntegerField(verbose_name="질문 ID", unique=True)
+    question = models.CharField(max_length=1000, verbose_name="질문1")
+    placeholder = models.CharField(max_length=1000)
     multipleChoiceAnswer1 = models.CharField(max_length=1000, verbose_name="객관식 답변1")
     multipleChoiceAnswer2 = models.CharField(max_length=1000, verbose_name="객관식 답변2")
     multipleChoiceAnswer3 = models.CharField(max_length=1000, verbose_name="객관식 답변3")
     multipleChoiceAnswer4 = models.CharField(max_length=1000, verbose_name="객관식 답변4")
     multipleChoiceAnswer5 = models.CharField(max_length=1000, verbose_name="객관식 답변5")
-    answer2 = models.IntegerField(verbose_name="주관식 답변", blank=True, null=True)
-    
+    answer = models.CharField(verbose_name="주관식 답변", blank=True, null=True)
+
     def __str__(self):
-        return f"AfterDay1Question: {self.question1}, {self.question2}"
+        return f"AfterDay1Question {self.question_id}: {self.question}"
