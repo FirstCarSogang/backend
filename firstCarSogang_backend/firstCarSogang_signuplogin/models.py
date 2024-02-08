@@ -16,6 +16,5 @@ class NormalUser(AbstractUser):
     last_login = models.DateTimeField(auto_now=True)
     sloworfast=models.BooleanField(default=True)
     ticketCount=models.IntegerField(default=3)
-
     def __str__(self):
         return str(self.username)
