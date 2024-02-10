@@ -125,3 +125,29 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# settings.py
+# settings.py
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    'match-users-every-day-at-22': {
+        'task': 'yourapp.tasks.match_users',
+        'schedule': crontab(minute=0, hour=22), 
+    },
+    'give-questions-every-day-at-24': {
+        'task': 'yourapp.tasks.give_questions',
+        'schedule': crontab(minute=0, hour=0),  
+    },
+}
+
+CELERY_BEAT_SCHEDULE = {
+    'match-users-every-day-at-22': {
+        'task': 'yourapp.tasks.match_users',
+        'schedule': crontab(minute=0, hour=22),  # Run every day at 22:00
+    },
+    'give-questions-every-day-at-24': {
+        'task': 'yourapp.tasks.give_questions',
+        'schedule': crontab(minute=0, hour=0),  # Run every day at 24:00
+    },
+}
