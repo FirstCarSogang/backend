@@ -8,28 +8,34 @@ class Ticket(models.Model):
     isAnswered = models.BooleanField(verbose_name="답변 여부", default=False)
     choose = models.BooleanField(verbose_name="선택 여부", default=False)
     withWhom = models.CharField(max_length=100, verbose_name="대상")
-    day1_question = models.OneToOneField('Day1Question', on_delete=models.CASCADE)
-    after_day1_question = models.OneToOneField('AfterDay1Question', on_delete=models.CASCADE, related_name='ticket')
     users = models.ManyToManyField(NormalUser, related_name='tickets', verbose_name="여기에 포함된 사용자들")
-
     def __str__(self):
         return f"{self.ticketNumber}: {self.progressingDay} 일째 대화"
 
     def initiate_conversation(self):
         users_with_tickets=self.users.filter(userTicket=True)
-        if users_with_tickets.count()<2:
-            return
-        users_list=list(users_with_tickets)
-        shuffle(users_list)
-        chatroom= Chatroom.objects.create()
-        chatroom.users.set(users_list)
-        if self.progressingDay == 1:
-            self.send_question_message(users_list[0], self.day1_question.question)
-            self.send_question_message(users_list[1], self.day1_question.question)
+        pairs=[]
+        odd_user=None
+        users_with_tickets=shuffle(list(users_with_tickets))
+        if len(users_with_tickets) % 2 == 0:
+            for i in range(0, len(users_with_tickets), 2):
+                pairs.append((users_with_tickets[i], users_with_tickets[i+1]))
         else:
-            self.send_question_message(users_list[0], self.after_day1_question.question)
-            self.send_question_message(users_list[1], self.after_day1_question.question)
-        self.choose = True 
+            odd_user = users_with_tickets.pop()
+
+            for i in range(0, len(users_with_tickets) - 1, 2):
+                pairs.append((users_with_tickets[i], users_with_tickets[i+1]))
+        
+        for user1,user2 in pairs:
+            user1.useTicket=False
+            user1.ticketCount-=1
+            user2.useTicket=False
+            user2.ticketCount-=1
+            user1.save()
+            user2.save()
+            chatroom=Chatroom.objects.create()
+            chatroom.users.add(user1,user2)
+
     
         
 class Chatroom(models.Model):
