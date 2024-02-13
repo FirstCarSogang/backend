@@ -1,6 +1,7 @@
 from django.db import models
 from firstCarSogang_signuplogin.models import NormalUser
-from random import shuffle
+from random import sample
+from datetime import datetime 
 
 class Ticket(models.Model):
     ticketNumber = models.IntegerField(verbose_name="티켓 번호")
@@ -13,33 +14,41 @@ class Ticket(models.Model):
         return f"{self.ticketNumber}: {self.progressingDay} 일째 대화"
 
     def initiate_conversation(self):
-        users_with_tickets=self.users.filter(userTicket=True)
-        pairs=[]
-        odd_user=None
-        users_with_tickets=shuffle(list(users_with_tickets))
-        if len(users_with_tickets) % 2 == 0:
-            for i in range(0, len(users_with_tickets), 2):
-                pairs.append((users_with_tickets[i], users_with_tickets[i+1]))
-        else:
-            odd_user = users_with_tickets.pop()
-
-            for i in range(0, len(users_with_tickets) - 1, 2):
-                pairs.append((users_with_tickets[i], users_with_tickets[i+1]))
+        users_with_tickets = self.users.filter(userTicket=True)
+        pairs = []
+        odd_user = None
         
-        for user1,user2 in pairs:
-            user1.useTicket=False
-            user1.ticketCount-=1
-            user2.useTicket=False
-            user2.ticketCount-=1
+        users_with_tickets_list = list(users_with_tickets)
+        sample(users_with_tickets_list, len(users_with_tickets_list))  # Shuffling the list
+        
+        if len(users_with_tickets_list) % 2 == 0:
+            for i in range(0, len(users_with_tickets_list), 2):
+                pairs.append((users_with_tickets_list[i], users_with_tickets_list[i + 1]))
+        else:
+            odd_user = users_with_tickets_list.pop()
+
+            for i in range(0, len(users_with_tickets_list) - 1, 2):
+                pairs.append((users_with_tickets_list[i], users_with_tickets_list[i + 1]))
+
+        for user1, user2 in pairs:
+            user1.userTicket = False
+            user1.ticketCount -= 1
+            user2.userTicket = False
+            user2.ticketCount -= 1
             user1.save()
             user2.save()
-            chatroom=Chatroom.objects.create()
-            chatroom.users.add(user1,user2)
+            chatroom = Chatroom.objects.create()
+            chatroom.users.add(user1, user2)
 
-    
-        
+
 class Chatroom(models.Model):
-    users=models.ManyToManyField(NormalUser,related_name="chatrooms")
+    users = models.ManyToManyField(NormalUser, verbose_name="대화 참여자들")
+    created_at = models.DateTimeField(default=datetime.now, editable=False)
+    
+    def __str__(self):
+        return f"Chatroom {self.pk}"
+
+
 class Day1Question(models.Model):
     question = models.CharField(max_length=1000, verbose_name="질문")
     placeholder = models.CharField(max_length=1000)
