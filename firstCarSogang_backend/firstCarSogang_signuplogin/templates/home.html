@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>매칭</title>
+</head>
+<body>
+
+<h2> {{ user.username }}</h2>
+
+<!-- Display user's photos -->
+{% if user.photo1 %}
+    <img src="{{ user.photo1.url }}" alt="Photo 1">
+{% endif %}
+{% if user.photo2 %}
+    <img src="{{ user.photo2.url }}" alt="Photo 2">
+{% endif %}
+{% if user.photo3 %}
+    <img src="{{ user.photo3.url }}" alt="Photo 3">
+{% endif %}
+
+<!-- Button to change photos -->
+<form method="POST" enctype="multipart/form-data" action="{% url 'change_photos' %}">
+    {% csrf_token %}
+    <input type="file" name="photo1">
+    <input type="file" name="photo2">
+    <input type="file" name="photo3">
+    <button type="submit">사진 변경하기</button>
+</form>
+
+<!-- Countdown until train departure -->
+<p id="countdown"></p>
+
+
+<p>남은 티켓 갯수: {{ user.ticketCount }}</p>
+
+<form method="POST" action="{% url 'toggle_ticket' %}">
+    {% csrf_token %}
+    <input type="checkbox" name="useTicket" {% if user.useTicket %}checked{% endif %}>
+    <label for="useTicket">티켓 사용</label>
+    <button type="submit">Save</button>
+</form>
+
+<script>
+    document.getElementById("useTicketToggle").addEventListener("change", function() {
+        var form = document.getElementById("toggleForm");
+        var formData = new FormData(form);
+        
+        fetch("{% url 'toggle_ticket' %}", {
+            method: "POST",
+            body: formData,
+            headers: {
+                "X-CSRFToken": "{{ csrf_token }}"
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+    });
+
+
+   
+    var now = new Date();
+    var target = new Date();
+    target.setHours(22, 0, 0, 0); 
+    if (now > target) {
+        target.setDate(target.getDate() + 1); /
+    }
+
+    var countdown = target - now;
+
+    function updateCountdown() {
+        countdown -= 1000; 
+        var hours = Math.floor(countdown / (1000 * 60 * 60));
+        var minutes = Math.floor((countdown % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((countdown % (1000 * 60)) / 1000);
+        document.getElementById("countdown").innerHTML = "열차출발까지 " + hours + "h " + minutes + "m " + seconds + "s";
+    }
+
+    updateCountdown(); 
+    setInterval(updateCountdown, 1000); 
+</script>
+
+</body>
+</html>

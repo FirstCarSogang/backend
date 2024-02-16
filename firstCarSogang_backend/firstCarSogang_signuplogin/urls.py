@@ -1,14 +1,19 @@
 from django.urls import path
-from django.contrib.auth.views import LoginView
+from firstCarSogang_signuplogin.views import *
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('signup/1', views.signup, name='signup'),
-    path('signup/2', views.signup2, name='signup2'),
-    path('login/', LoginView.as_view(template_name='login.html'), name='login'),
-    path('logout/', views.logout_view, name='logout'),
-    path('mypage/', views.mypage, name="mypage"),
+    path('', UserLoginView.as_view(), name='user_login'),
+    path('user_registration/', User_Registraion.as_view(),name='user_registration'),
+    path('forgot_password', forgot_password, name='forgot_password'),
+    path('send_otp', send_otp, name='send_otp'),
+    path('enter_otp', enter_otp, name='enter_otp'),
+    path('password_reset', password_reset, name='password_reset'),
+    path('send_otp1/', send_otp1.as_view(), name='send_otp1'),
+    path('verify_otp/', verify_otp.as_view(), name='verify_otp'),
+    path('home', home, name='home'),  
+    path('clear_session_data/', clear_session_data, name='clear_session_data'),
+
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -1,8 +1,0 @@
-<h2>회원 가입 2단계</h2>
-<form method="post" action="{% url 'signup2' %}" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" name="slow" value="0">Slow</button>
-    <button type="submit" name="fast" value="1">Fast</button>
-    <button type="submit", name="submit">회원 가입 완료!</button>
-</form>

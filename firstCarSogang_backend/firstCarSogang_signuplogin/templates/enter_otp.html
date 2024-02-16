@@ -1,0 +1,30 @@
+<!--================ Start Enter OTP Area =================-->
+<!--================ Start Content Area =================-->
+<!-- ================ End Content Area ================= -->
+<!-- Alerts -->
+<section style="padding-top: 20px;" >
+   {% include 'alert.html' %}
+</section>
+<!--================Login Box Area =================-->
+<section class="login_box_area section-margin">
+   <div class="container">
+      <div class="row">
+         <div class="col-lg-6">
+            <div class="login_form_inner">
+               <h3>OTP 5자를 입력해주세요</h3>
+               <form class="row login_form" method="post">
+                  {% csrf_token %}
+                  <div class="col-md-12 form-group">
+                     <input type="text" class="form-control" id="otp" name="otp" placeholder="One Time Password (OTP)" onfocus="this.placeholder = ''" onblur="this.placeholder = 'OTP 5자'">
+                  </div>
+                  <div class="col-md-12 form-group">
+                     <button type="submit" value="submit" class="button w-100">비밀번호 초기화</button>
+                  </div>
+               </form>
+            </div>
+         </div>
+      </div>
+   </div>
+</section>
+<!--================End Login Box Area =================-->
+<!--================ End Enter OTP Area =================-->
