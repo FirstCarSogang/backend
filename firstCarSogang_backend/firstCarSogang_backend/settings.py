@@ -10,8 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
-
+import django
+from django.utils.encoding import force_str
+django.utils.encoding.force_text = force_str
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -31,15 +34,15 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'firstCarSogang_home',
     'firstCarSogang_signuplogin',
-    'firstCarSogang_tickets',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -53,7 +56,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'firstCarSogang_backend.urls'
-LOGIN_REDIRECT_URL='/'
+
 import os
 TEMPLATES = [
     {
@@ -84,10 +87,20 @@ DATABASES = {
     }
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),  # Access 토큰 유효기간 설정
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # Refresh 토큰 유효기간 설정
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
-AUTH_USER_MODEL = 'firstCarSogang_signuplogin.NormalUser'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -110,33 +123,44 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Seoul'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = False
+USE_TZ = True
+
+
+
+#EMAIL
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.sogang.ac.kr'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
+
+
+
+
+
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+
+
+from pathlib import Path
+
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-# settings.py
-# settings.py
-from celery.schedules import crontab
-
-CELERY_BEAT_SCHEDULE = {
-    'match-users-every-day-at-22': {
-        'task': 'yourapp.tasks.match_users',
-        'schedule': crontab(minute=0, hour=22), 
-    },
-    'give-questions-every-day-at-24': {
-        'task': 'yourapp.tasks.give_questions',
-        'schedule': crontab(minute=0, hour=0),  
-    },
-}

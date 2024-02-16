@@ -1,0 +1,235 @@
+
+
+<!-- 두 번째 화면 -->
+<form class="row login_form" id="photo_form" style="display: none" enctype="multipart/form-data"  action="{% url 'user_registration' %}" method="post">
+    {% csrf_token %}
+    <div class="col-md-12 form-group">
+        <input name="photo1" type="file" class="form-control" id="photo1" required>
+    </div>
+    <div class="col-md-12 form-group">
+        <input name="photo2" type="file" class="form-control" id="photo2" required>
+    </div>
+    <div class="col-md-12 form-group">
+        <input name="photo3" type="file" class="form-control" id="photo3" required>
+    </div>
+    <div class="col-md-12 form-group">
+        <input type="radio" id="slow" name="sloworfast" value="slow" required>
+        <label for="slow">Slow</label>
+        <input type="radio" id="fast" name="sloworfast" value="fast" required>
+        <label for="fast">Fast</label>
+    </div>
+    <div class="col-md-12 form-group">
+        <button type="submit" onclick="submitForms()"  class="button w-100">회원 가입 완료 </button>
+    </div>
+</form>
+
+<!-- 첫 번째 화면 -->
+<form class="row login_form" id="register_form" action="{% url 'user_registration' %}" method="post">
+    {% csrf_token %}
+    <div class="col-md-12 form-group">
+        <input value="{{ value.name }}" name="name" type="text" class="form-control" id="name" placeholder="이름" required>
+    </div>
+    <div class="col-md-12 form-group">
+        <input value="{{ value.username }}" name="username" type="number" class="form-control" id="username" placeholder="학번" required>
+    </div>
+    <div class="col-md-12 form-group">
+        <input value="{{ value.email }}" name="email" type="email" class="form-control" id="email" placeholder="이메일 주소" required>
+    </div>
+    <div class="col-md-12 form-group">
+        <input name="password" type="password" class="form-control" id="password" placeholder="비밀번호" required>
+    </div>
+    <div class="col-md-12 form-group">
+        <input name="confirm_password" type="password" class="form-control" id="confirm_password" placeholder="비밀번호 확인" required>
+    <div class="col-md-12 form-group">
+        <input value="{{ value.kakaotalkID }}" name="kakaotalkID" type="text" class="form-control" id="kakaotalkID" placeholder="카카오톡아이디" required>
+    </div>
+    <!-- 인증번호 발송 버튼 -->
+    <div class="col-md-12 form-group">
+        <button type="button" onclick="sendOTP()" class="button">인증번호 전송</button>
+    </div>
+    <!-- 인증번호 입력란 -->
+    <div class="col-md-12 form-group" id="otp_input" style="display: none;">
+        <input name="otp" type="text" class="form-control" id="otp" placeholder="Enter OTP" required>
+    </div>
+    <div class="col-md-12 form-group" id="verify_otp_btn" style="display: none;">
+        <button type="button" onclick="verifyAndSubmit()" class="button"> 다음 </button>
+    </div>
+</form>
+
+
+<script>
+    function validatePassword() {
+        var password = document.getElementById("password").value;
+        var confirm_password = document.getElementById("confirm_password").value;
+    
+        if (password !== confirm_password) {
+            alert("Passwords do not match. Please enter the same password in both fields.");
+            return false; // 비밀번호가 일치하지 않으면 유효성 검사 실패
+        }
+        return true; // 비밀번호가 일치하면 유효성 검사 통과
+    }
+
+      // 이메일 주소 유효성 검사 함수
+    function isValidEmail(email) {
+        var emailRegex = /^[a-zA-Z0-9._%+-]+@sogang.ac.kr$/;
+        return emailRegex.test(email);
+    }
+
+    function validateUsername(username) {
+        // username이 7자 미만이거나 10자 초과인 경우
+        if (username.length < 7 || username.length > 10) {
+            alert("Username must be between 7 and 10 characters long.");
+            return false;
+        }
+        // 숫자로만 구성되어 있는지 확인
+        if (!/^\d+$/.test(username)) {
+            alert("Username must contain only numbers.");
+            return false;
+        }
+        return true;
+    }
+
+    function sendOTP() {
+        // 필수 입력 필드들의 값을 가져오기
+        var name = document.getElementById("name").value;
+        var username = document.getElementById("username").value;
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+        var confirm_password = document.getElementById("confirm_password").value;
+        var kakaotalkID = document.getElementById("kakaotalkID").value;
+    
+        // 입력 필드들의 유효성 검사 (비어있는지 확인)
+        if (name.trim() === "" || username.trim() === "" || email.trim() === "" || password.trim() === "" || confirm_password.trim() === "" || kakaotalkID.trim() === "") {
+            alert("Please fill in all required fields.");
+            return; // 함수 종료
+        }
+    
+        // 이메일 주소 유효성 검사
+        if (!isValidEmail(email)) {
+            alert("Please enter a valid email address.");
+            return; // 함수 종료
+        }
+
+        function validateUsername(username) {
+            // username이 7자 미만이거나 10자 초과인 경우
+            if (username.length < 7 || username.length > 10) {
+                alert("Username must be between 7 and 10 characters long.");
+                return false;
+            }
+            // 숫자로만 구성되어 있는지 확인
+            if (!/^\d+$/.test(username)) {
+                alert("Username must contain only numbers.");
+                return false;
+            }
+            return true;
+        }
+
+        // 비밀번호 유효성 검사
+        if (!validatePassword()) {
+            return; // 함수 종료
+        }
+    
+        // OTP 전송
+        fetch("/send_otp1/?email=" + email)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("OTP has been sent to your email.");
+                    document.getElementById("otp_input").style.display = "block";
+                    document.getElementById("verify_otp_btn").style.display = "block";
+                } else {
+                    alert("Failed to send OTP. Please try again later.");
+                }
+            });
+    }
+    
+  
+
+    function verifyAndSubmit() {
+        var otp = document.getElementById("otp").value;
+        fetch("/verify_otp/?otp=" + otp)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("OTP verification successful.");
+                    
+                    // register_form 데이터 서버에 비동기적으로 전송
+                    var formData = new FormData(document.getElementById("register_form"));
+                    fetch(document.getElementById("register_form").action, {
+                        method: "POST",
+                        body: formData,
+                        headers: {
+                            'X-CSRFToken': getCookie('csrftoken')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // 서버에서 처리 후 photo_form 표시
+                            document.getElementById("photo_form").style.display = "block";
+                            document.getElementById("register_form").style.display = "none";
+                        } else {
+                            alert("Failed to submit register_form. Please try again.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                } else {
+                    alert("Invalid OTP. Please try again.");
+                }
+            });
+    }
+
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            var cookies = document.cookie.split(';');
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    function submitForms() {
+        var photo1 = document.getElementById("photo1").value;
+        var photo2 = document.getElementById("photo2").value;
+        var photo3 = document.getElementById("photo3").value;
+        var sloworfast = document.querySelector('input[name="sloworfast"]:checked');
+
+    // 유효성 검사
+        if (photo1.trim() === "" || photo2.trim() === "" || photo3.trim() === "" || !sloworfast) {
+            alert("Please select three photos and choose slow or fast.");
+            return; // 제출 중지
+        }
+
+        // 두번째 폼 제출
+        document.getElementById("photo_form").submit();
+        window.location.href = "{% url 'user_login' %}";
+    }
+
+    window.onload = function() {
+        // 세션 데이터 삭제
+        fetch("/clear_session_data/", {
+            method: "GET",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken"),
+            },
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log("Session data cleared successfully.");
+            } else {
+                console.error("Failed to clear session data.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+    };
+</script>
