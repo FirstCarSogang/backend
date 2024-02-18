@@ -35,6 +35,8 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'firstCarSogang_signuplogin',
+    'firstCarSogang_tickets',
+    'firstCarSogang_home',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

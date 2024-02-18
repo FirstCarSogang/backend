@@ -1,5 +1,6 @@
 from django.db import models
-from firstCarSogang_signuplogin.models import NormalUser
+from firstCarSogang_signuplogin.models import UserProfile
+from django.contrib.postgres.fields import ArrayField
 from random import sample
 from datetime import datetime 
 
@@ -8,8 +9,8 @@ class Ticket(models.Model):
     progressingDay = models.IntegerField(verbose_name="진행중인 날짜")
     isAnswered = models.BooleanField(verbose_name="답변 여부", default=False)
     choose = models.BooleanField(verbose_name="선택 여부", default=False)
-    withWhom = models.CharField(max_length=100, verbose_name="대상")
-    users = models.ManyToManyField(NormalUser, related_name='tickets', verbose_name="여기에 포함된 사용자들")
+    dayQuestion=ArrayField(models.IntegerField(),null=True,blank=True)
+    users = models.ManyToManyField(UserProfile, related_name='tickets', verbose_name="여기에 포함된 사용자들")
     def __str__(self):
         return f"{self.ticketNumber}: {self.progressingDay} 일째 대화"
 
@@ -42,7 +43,7 @@ class Ticket(models.Model):
 
 
 class Chatroom(models.Model):
-    users = models.ManyToManyField(NormalUser, verbose_name="대화 참여자들")
+    users = models.ManyToManyField(UserProfile, verbose_name="대화 참여자들")
     created_at = models.DateTimeField(default=datetime.now, editable=False)
     
     def __str__(self):
@@ -53,7 +54,7 @@ class Day1Question(models.Model):
     question = models.CharField(max_length=1000, verbose_name="질문")
     placeholder = models.CharField(max_length=1000)
     answer = models.CharField(max_length=1000, verbose_name="대답", blank=True, null=True)
-    user = models.ForeignKey(NormalUser, on_delete=models.CASCADE, related_name='daily_question')
+    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='daily_question')
 
     def __str__(self):
         return f"Question: {self.question} - User: {self.user}"
