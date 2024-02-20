@@ -91,7 +91,6 @@ class User_Registraion(View):
                 return render(request, "registration.html", data)
 # ===========================================================================================
 
-  
 def clear_session_data(request):
     try:
         del request.session['form_data']

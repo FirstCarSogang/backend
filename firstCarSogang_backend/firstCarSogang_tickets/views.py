@@ -26,7 +26,7 @@ def slow_train(request):
                 'question': question.question,
                 'placeholder': question.placeholder,
             }
-            for question in day1_questions
+            for question in ticket
         ]
     }
     return JsonResponse(data)
