@@ -53,9 +53,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'firstCarSogang_signuplogin.middleware.TokenMiddleware', 
 ]
 
 ROOT_URLCONF = 'firstCarSogang_backend.urls'
+
+AUTH_USER_MODEL = 'firstCarSogang_signuplogin.UserProfile'
 
 import os
 TEMPLATES = [
