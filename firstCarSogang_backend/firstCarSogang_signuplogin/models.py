@@ -3,57 +3,44 @@ from django.utils import timezone
 import random
 import string
 from django.contrib.auth.models import AbstractUser
-from django.contrib.auth.models import Group, Permission
 
 def user_directory_path(instance, filename):
     # 파일 업로드 경로를 사용자 이름(username) 기반으로 지정
     return 'user_profile/{0}/{1}'.format(instance.username, filename)
 
-
 class UserProfile(AbstractUser):
-    username = models.CharField(max_length=10, unique=True)
+    username = models.CharField(max_length=10, unique=True)  # 기본값으로 빈 문자열을 설정
     name = models.CharField(max_length=100)
     kakaotalkID = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     photo1 = models.ImageField(upload_to=user_directory_path,null=True)
     photo2 = models.ImageField(upload_to=user_directory_path,null=True)
     photo3 = models.ImageField(upload_to=user_directory_path,null=True)
+  
+    password = models.CharField(max_length=25)
+    train = models.BooleanField(default=True)
+    
     date_joined = models.DateTimeField(auto_now_add=True)
     last_login = models.DateTimeField(auto_now=True)
-    password = models.CharField(max_length=25)
-    otp = models.CharField(max_length=5,default='00000')
-    sloworfast=models.BooleanField(default=True)
+    
+    otp = models.CharField(max_length=5,default='20249')
     ticketCount=models.IntegerField(default=3)
     useTicket=models.BooleanField(default=False)
-    
-    @staticmethod
-    def get_user_by_username(username):
-        try:
-            return UserProfile.objects.get(username=username)
-        except:
-            return False
+      
+      
+    USERNAME_FIELD = 'username'
+    # Refresh Token 필드 추가
+    refresh_token = models.CharField(max_length=255, blank=True, null=True)
 
-
-    def isExists(self):
-        if UserProfile.objects.filter(username = self.username):
-            return True
-        return False
-
-    def register(self):
-        self.save()
-
-
-    def __str__(self):
-        return f"{self.name}"
-    
-    groups = models.ManyToManyField(Group, related_name='user_profiles')
-    user_permissions = models.ManyToManyField(Permission, related_name='user_profiles')
     def save(self, *args, **kwargs):
         if not self.pk:  
             self.is_staff = False  # 기본적으로 staff status를 False로 설정
             self.is_superuser = False  # 기본적으로 superuser status를 False로 설정
         super().save(*args, **kwargs)
     
+
+
+
 
 class EmailVerificationOTP(models.Model):
     email = models.EmailField()
@@ -82,3 +69,6 @@ def generate_unique_otp(length=5):
     otp = ''.join(random.choices(characters, k=length))
 
     return otp
+
+
+
